@@ -1,0 +1,32 @@
+version: '3.6'
+services:
+  db:
+    image: mongo:4.2.3-bionic
+    container_name: my-mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=btc
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - ./mongodbdata:/data/db
+    networks:
+      - mongo_net
+  bts:
+    image: bts/backend
+    build: .
+    container_name: my-bts
+    ports:
+      - 8080:8080
+    networks:
+      - mongo_net
+    depends_on:
+      - db
+
+volumes:
+  mongodb:
+
+networks:
+  mongo_net:
+    driver: bridge
